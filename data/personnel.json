@@ -1,0 +1,25 @@
+
+{
+   "personelle" : [
+        
+        {
+          "id": "1",
+          "nom": "Dr. Jean koffi",
+          "specialite": "Cardiologue",
+          "contact": "koffit@example.com",
+          "planning": ["Lundi - 9h à 17h", "Mercredi - 9h à 17h"],
+          "role": "medecin",
+          "horaire": "9h à 17h"  
+        },
+        {
+          "id": "2",
+          "nom": "maula",
+          "specialite": "Infirmière",
+          "contact": "maulie@example.com",
+          "planning": ["Mardi - 8h à 16h", "Jeudi - 8h à 16h"],
+          "role": "infirmier",
+          "horaire": "8h à 16h"  
+        }
+      ]
+      
+}  
