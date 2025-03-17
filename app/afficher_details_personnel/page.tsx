@@ -1,41 +1,65 @@
-import { GetServerSideProps } from "next";
-import { Personnel } from "../../type";
-import Link from "next/link";
+"use client";
 
-export default function PersonnelDetail({ personnel }: { personnel: Personnel | null }) {
-  if (!personnel) return <p>Personnel introuvable</p>;
+import { useEffect, useState } from "react";
+import { Personnel } from "../../type";
+
+
+export default function PersonnelList() {
+  const [personnel, setPersonnel] = useState<Personnel[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPersonnel = async () => {
+      try {
+        const response = await fetch("/api/afficher_personnel");
+        const data = await response.json();
+        setPersonnel(data.personnel);
+      } catch (error) {
+        console.error("Erreur lors du chargement des données :", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPersonnel();
+  }, []);
 
   return (
-    <div className="container mx-auto p-8">
-      <h1 className="text-3xl font-bold">{personnel.nom}</h1>
-      <p className="text-gray-600">{personnel.specialite}</p>
-      <p className="text-gray-600">{personnel.contact}</p>
-      <h2 className="text-xl font-semibold mt-4">Planning</h2>
-      <ul className="list-disc pl-5">
-        {personnel.planning.map((horaire) => (
-          <li key={horaire} className="text-gray-700">{horaire}</li>
-        ))}
-      </ul>
+    <div className="container mx-auto p-6">
+      <h1 className="text-3xl font-bold text-center text-blue-600 mb-6">
+        Liste du Personnel
+      </h1>
 
-      <Link href={`/personneledit/${personnel.id}`} className="mt-4 inline-block px-4 py-2 bg-blue-500 text-white rounded">
-        Modifier
-      </Link>
+      {loading ? (
+        <p className="text-center text-gray-500">Chargement en cours...</p>
+      ) : personnel.length === 0 ? (
+        <p className="text-center text-red-500">Aucun membre du personnel trouvé.</p>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+            <thead className="bg-blue-600 text-white">
+              <tr>
+                <th className="py-3 px-6 text-left">Nom</th>
+                <th className="py-3 px-6 text-left">Prénom</th>
+                <th className="py-3 px-6 text-left">Email</th>
+                <th className="py-3 px-6 text-left">Poste</th>
+                <th className="py-3 px-6 text-left">Specialite</th>
+              </tr>
+            </thead>
+            <tbody>
+              {personnel.map((person) => (
+                <tr key={person.id} className="border-b hover:bg-gray-100">
+                  <td className="py-3 px-6">{person.nom}</td>
+                  <td className="py-3 px-6">{person.prenom}</td>
+                  <td className="py-3 px-6">{person.email}</td>
+                  <td className="py-3 px-6">{person.role}</td>
+                  <td className="py-3 px-6">{person.specialite}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }
-
-// Typage des params dans getServerSideProps
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  const res = await fetch(`http://localhost:3000/api/personnel`);
-  const personnelList: Personnel[] = await res.json();
-  
-  // Vérifier si params?.id est défini et correspond à un ID valide
-  if (typeof params?.id !== "string") {
-    return { props: { personnel: null } };
-  }
-
-  // Chercher le personnel avec l'ID
-  const personnel = personnelList.find((p) => p.id === params.id) || null;
-
-  return { props: { personnel } };
-};

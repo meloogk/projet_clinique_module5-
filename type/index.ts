@@ -1,6 +1,8 @@
 export type Personnel = {
     id: string;
     nom: string;
+    prenom: string;
+    email: string;
     specialite: string;
     contact: string;
     planning: string[];

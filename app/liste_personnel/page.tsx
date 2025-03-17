@@ -10,7 +10,7 @@ export default function PersonnelList() {
   const [error, setError] = useState<string | null>(null); // État d'erreur
 
   useEffect(() => {
-    fetch("/api/personnel")
+    fetch("/api/afficher_personnel")
       .then((res) => {
         if (!res.ok) {
           throw new Error("Erreur lors de la récupération des données.");

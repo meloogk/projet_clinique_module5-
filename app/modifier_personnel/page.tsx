@@ -11,7 +11,7 @@ export default function EditPersonnel() {
 
   useEffect(() => {
     if (id) {
-      fetch(`/api/personnel`)
+      fetch(`/api/update_personnel`)
         .then((res) => res.json())
         .then((data) => setPersonnel(data.find((p: Personnel) => p.id === id)));
     }
